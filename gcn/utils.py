@@ -139,7 +139,7 @@ def sparse_to_tuple(sparse_mx):
 
 def preprocess_features(features):
     """Row-normalize feature matrix and convert to tuple representation"""
-    rowsum = np.array(tf.reduce_sum(features, 1))
+    rowsum = tf.reduce_sum(features, 1)
     r_inv = np.power(rowsum, -1).flatten()
     r_inv[np.isinf(r_inv)] = 0.
     r_mat_inv = sp.diags(r_inv)
