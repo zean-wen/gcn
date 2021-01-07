@@ -215,13 +215,13 @@ class InputLayer(Layer):
         ocr_bounding_boxes = self.ocr_bbox_project(self.ocr_bounding_boxes)
 
         object_embedding = tf.concat(
-            values=[inputs, object_visual_features], axis=2, name='concat'
+            values=[inputs, object_visual_features], axis=1, name='concat'
         )
         ocr_embedding = tf.concat(
-            values=[self.ocr_token_embeddings, ocr_bounding_boxes], axis=2, name='concat'
+            values=[self.ocr_token_embeddings, ocr_bounding_boxes], axis=1, name='concat'
         )
         outputs = tf.concat(
-            values=[object_embedding, ocr_embedding], axis=1, name='concat'
+            values=[object_embedding, ocr_embedding], axis=0, name='concat'
         )
 
         return preprocess_features(tf.sparse.from_dense(outputs, name=None))
