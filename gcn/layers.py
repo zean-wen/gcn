@@ -216,8 +216,8 @@ class InputLayer(Layer):
         self.ocr_token_embeddings = placeholders['ocr_token_embeddings']
         self.ocr_bounding_boxes = placeholders['ocr_bounding_boxes']
         with tf.variable_scope(self.name + '_vars'):
-            self.vars['obj_v_proj'] = uniform([2048, 300], name='obj_v_proj')
-            self.vars['ocr_bbox_proj'] = uniform([8, 300], name='ocr_bbox_proj')
+            self.vars['obj_v_proj'] = uniform([2048, 300], trainable=True, name='obj_v_proj')
+            self.vars['ocr_bbox_proj'] = uniform([8, 300], trainable=True, name='ocr_bbox_proj')
         # self.object_visual_feature_project = FeatureProject(input_dim=2048, output_dim=300, **kwargs)
         # self.ocr_bbox_project = FeatureProject(input_dim=8, output_dim=300, **kwargs)
 

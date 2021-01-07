@@ -2,10 +2,10 @@ import tensorflow as tf
 import numpy as np
 
 
-def uniform(shape, scale=0.05, name=None):
+def uniform(shape, trainable=None, scale=0.05, name=None):
     """Uniform init."""
     initial = tf.random_uniform(shape, minval=-scale, maxval=scale, dtype=tf.float32)
-    return tf.Variable(initial, name=name)
+    return tf.Variable(initial, trainable=trainable, name=name)
 
 
 def glorot(shape, name=None):
