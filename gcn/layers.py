@@ -37,10 +37,14 @@ def dot(x, y, sparse=False):
     return res
 
 
-def row_normalization(features):
-    return tf.linalg.normalize(
-        features, ord=np.inf, axis=1, name=None
-    )
+def tensor_row_normalization(x):
+    rowsum = tf.math.reduce_sum(x, axis=1)
+    r_inv = tf.math.pow(rowsum, -1, name=None)
+    index = tf.math.is_inf(r_inv)
+    diag = tf.where(index, tf.zeros_like(r_inv), r_inv)
+    r_mat_inv = tf.linalg.tensor_diag(diag)
+    result = tf.tensordot(r_mat_inv, x, axes=1)
+    return result
 
 
 class Layer(object):
@@ -226,8 +230,8 @@ class InputLayer(Layer):
         ocr_embedding = tf.concat(
             values=[self.ocr_token_embeddings, ocr_bounding_boxes], axis=1, name='concat'
         )
-        x = tf.concat(
+        outputs = tf.concat(
             values=[object_embedding, ocr_embedding], axis=0, name='concat'
         )
-        outputs = tf.linalg.normalize(x, ord=np.inf, axis=1, name=None)
-        return outputs
+
+        return tensor_row_normalization(outputs)
