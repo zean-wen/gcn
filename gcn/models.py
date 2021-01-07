@@ -56,6 +56,7 @@ class Model(object):
         self._accuracy()
 
         self.opt_op = self.optimizer.minimize(self.loss)
+        self.layer_hidden = self.layers.GCN_hidden
 
     def predict(self):
         pass

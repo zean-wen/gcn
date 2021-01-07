@@ -178,7 +178,7 @@ class GraphConvolution(Layer):
             x = sparse_dropout(x, 1-self.dropout, self.num_features_nonzero)
         else:
             x = tf.nn.dropout(x, 1-self.dropout)
-
+        self.GCN_hidden = x
         # convolve
         supports = list()
         for i in range(len(self.support)):
