@@ -1,5 +1,7 @@
+import os
 import numpy as np
 import pickle as pkl
+import h5py
 import networkx as nx
 import scipy.sparse as sp
 from scipy.sparse.linalg.eigen.arpack import eigsh
@@ -57,12 +59,12 @@ def load_data(dataset_str):
     if dataset_str == 'citeseer':
         # Fix citeseer dataset (there are some isolated nodes in the graph)
         # Find isolated nodes, add them as zero-vecs into the right position
-        test_idx_range_full = range(min(test_idx_reorder), max(test_idx_reorder)+1)
+        test_idx_range_full = range(min(test_idx_reorder), max(test_idx_reorder) + 1)
         tx_extended = sp.lil_matrix((len(test_idx_range_full), x.shape[1]))
-        tx_extended[test_idx_range-min(test_idx_range), :] = tx
+        tx_extended[test_idx_range - min(test_idx_range), :] = tx
         tx = tx_extended
         ty_extended = np.zeros((len(test_idx_range_full), y.shape[1]))
-        ty_extended[test_idx_range-min(test_idx_range), :] = ty
+        ty_extended[test_idx_range - min(test_idx_range), :] = ty
         ty = ty_extended
 
     features = sp.vstack((allx, tx)).tolil()
@@ -74,7 +76,7 @@ def load_data(dataset_str):
 
     idx_test = test_idx_range.tolist()
     idx_train = range(len(y))
-    idx_val = range(len(y), len(y)+500)
+    idx_val = range(len(y), len(y) + 500)
 
     train_mask = sample_mask(idx_train, labels.shape[0])
     val_mask = sample_mask(idx_val, labels.shape[0])
@@ -90,8 +92,33 @@ def load_data(dataset_str):
     return adj, features, y_train, y_val, y_test, train_mask, val_mask, test_mask
 
 
+def load_data_modified(data_dir, tier, image_index):
+    node_feature_h5 = h5py.File(os.path.join(data_dir, '{}_node_feature.h5'.format(tier)), 'r')
+    object_name_embedding = node_feature_h5['object_name_embedding'][image_index]
+    object_visual_features = node_feature_h5['object_visual_features'][image_index]
+    ocr_bounding_boxes = node_feature_h5['ocr_bounding_boxes'][image_index]
+    ocr_token_embeddings = node_feature_h5['ocr_token_embeddings'][image_index]
+
+    adj_matrix_h5 = h5py.File(os.path.join(data_dir, '{}_adj_matrix.h5'.format(tier)), 'r')
+    adj = adj_matrix_h5['adjacent_matrix'][image_index]
+    adj = sp.csr_matrix(adj)
+
+    target_h5 = h5py.File(os.path.join(data_dir, '{}_adj_matrix.h5'.format(tier)), 'r')
+    target = target_h5['target'][image_index]
+
+    idx_train = range(len(target))
+
+    train_mask = sample_mask(idx_train, target.shape[0])
+
+    y_train = target
+
+    return adj, object_name_embedding, object_visual_features, ocr_bounding_boxes, ocr_token_embeddings, \
+           y_train, train_mask
+
+
 def sparse_to_tuple(sparse_mx):
     """Convert sparse matrix to tuple representation."""
+
     def to_tuple(mx):
         if not sp.isspmatrix_coo(mx):
             mx = mx.tocoo()
@@ -135,14 +162,19 @@ def preprocess_adj(adj):
     return sparse_to_tuple(adj_normalized)
 
 
-def construct_feed_dict(features, support, labels, labels_mask, placeholders):
+def construct_feed_dict(object_name_embeddings, object_visual_features, ocr_bounding_boxes,
+                        ocr_token_embeddings, support, labels, labels_mask, placeholders):
     """Construct feed dictionary."""
     feed_dict = dict()
     feed_dict.update({placeholders['labels']: labels})
     feed_dict.update({placeholders['labels_mask']: labels_mask})
-    feed_dict.update({placeholders['features']: features})
+    feed_dict.update({placeholders['object_name_embeddings']: object_name_embeddings})
+    feed_dict.update({placeholders['object_visual_features']: object_visual_features})
+    feed_dict.update({placeholders['ocr_bounding_boxes']: ocr_bounding_boxes})
+    feed_dict.update({placeholders['ocr_token_embeddings']: ocr_token_embeddings})
     feed_dict.update({placeholders['support'][i]: support[i] for i in range(len(support))})
-    feed_dict.update({placeholders['num_features_nonzero']: features[1].shape})
+    # feed_dict.update({placeholders['num_features_nonzero']: features[1].shape})
+    feed_dict.update({placeholders['num_features_nonzero']: (1, 600)})
     return feed_dict
 
 
@@ -163,7 +195,7 @@ def chebyshev_polynomials(adj, k):
         s_lap = sp.csr_matrix(scaled_lap, copy=True)
         return 2 * s_lap.dot(t_k_minus_one) - t_k_minus_two
 
-    for i in range(2, k+1):
+    for i in range(2, k + 1):
         t_k.append(chebyshev_recurrence(t_k[-1], t_k[-2], scaled_laplacian))
 
     return sparse_to_tuple(t_k)

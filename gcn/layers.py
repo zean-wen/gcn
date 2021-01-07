@@ -1,4 +1,5 @@
 from gcn.inits import *
+from gcn.utils import preprocess_features
 import tensorflow as tf
 
 flags = tf.app.flags
@@ -186,3 +187,39 @@ class GraphConvolution(Layer):
             output += self.vars['bias']
 
         return self.act(output)
+
+
+class FeatureProject(Layer):
+    def __int__(self, input_dim, output_dim, **kwargs):
+        super(FeatureProject, self).__init__(**kwargs)
+        with tf.variable_scope(self.name + '_vars'):
+            self.vars['weights'] = glorot([input_dim, output_dim], name='weights')
+
+    def _call(self, inputs):
+        x = inputs
+        output = dot(x, self.vars['weights'])
+        return output
+
+
+class InputLayer(Layer):
+    def __init__(self, **kwargs):
+        super(InputLayer, self).__init__(**kwargs)
+        self.object_visual_feature_project = FeatureProject(input_dim=2048, output_dim=300, **kwargs)
+        self.ocr_bbox_project = FeatureProject(input_dim=8, output_dim=300, **kwargs)
+
+    def _call(self, inputs):
+        object_name_embedding, object_visual_features, ocr_token_embeddings, ocr_bounding_boxes = inputs
+        object_visual_features = self.object_visual_feature_project(object_visual_features)
+        ocr_bounding_boxes = self.ocr_bbox_project(ocr_bounding_boxes)
+
+        object_embedding = tf.concat(
+            values=[object_name_embedding, object_visual_features], axis=2, name='concat'
+        )
+        ocr_embedding = tf.concat(
+            values=[ocr_token_embeddings, ocr_bounding_boxes], axis=2, name='concat'
+        )
+        outputs = tf.concat(
+            values=[object_embedding, ocr_embedding], axis=1, name='concat'
+        )
+
+        return preprocess_features(tf.sparse.from_dense(outputs, name=None))
