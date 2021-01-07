@@ -130,7 +130,7 @@ out = sess.run([model.input_layer.vars['obj_v_proj'], model.input_layer.object_v
 print(out[0])
 print(out[0].shape)
 print(out[1])
-print(tf.get_variable)
+print(tf.get_variable())
 print("Optimization Finished!")
 
 # Testing
