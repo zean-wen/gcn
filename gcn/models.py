@@ -207,7 +207,7 @@ class GCNModified(Model):
 
     def _build(self):
 
-        self.layers.append(InputLayer(logging=self.logging))
+        self.layers.append(InputLayer(self.placeholders, logging=self.logging))
 
         self.layers.append(GraphConvolution(input_dim=self.input_dim,
                                             output_dim=FLAGS.hidden1,
