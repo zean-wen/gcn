@@ -190,8 +190,8 @@ class GraphConvolution(Layer):
 
 
 class FeatureProject(Layer):
-    def __int__(self, input_dim, output_dim, **kwargs):
-        super(FeatureProject, self).__init__(**kwargs)
+    def __int__(self, input_dim, output_dim):
+        super(FeatureProject, self).__init__()
         with tf.variable_scope(self.name + '_vars'):
             self.vars['weights'] = glorot([input_dim, output_dim], name='weights')
 
@@ -204,8 +204,8 @@ class FeatureProject(Layer):
 class InputLayer(Layer):
     def __init__(self, **kwargs):
         super(InputLayer, self).__init__(**kwargs)
-        self.object_visual_feature_project = FeatureProject(input_dim=2048, output_dim=300, **kwargs)
-        self.ocr_bbox_project = FeatureProject(input_dim=8, output_dim=300, **kwargs)
+        self.object_visual_feature_project = FeatureProject(input_dim=2048, output_dim=300)
+        self.ocr_bbox_project = FeatureProject(input_dim=8, output_dim=300)
 
     def _call(self, inputs):
         object_name_embedding, object_visual_features, ocr_token_embeddings, ocr_bounding_boxes = inputs
