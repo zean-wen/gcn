@@ -234,4 +234,4 @@ class InputLayer(Layer):
             values=[object_embedding, ocr_embedding], axis=0, name='concat'
         )
 
-        return tensor_row_normalization(outputs)
+        return tf.sparse.from_dense(tensor_row_normalization(outputs))
