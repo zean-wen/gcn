@@ -41,7 +41,8 @@ class Model(object):
             self._build()
 
         # Build sequential layer model
-        self.activations.append(self.inputs)
+        # self.activations.append(self.inputs)
+
         for layer in self.layers:
             hidden = layer(self.activations[-1])
             self.activations.append(hidden)
@@ -206,8 +207,7 @@ class GCNModified(Model):
                                         self.placeholders['labels_mask'])
 
     def _build(self):
-
-        self.layers.append(InputLayer(self.placeholders, logging=self.logging))
+        self.activations.append(InputLayer(self.placeholders, logging=self.logging)(self.inputs))
 
         self.layers.append(GraphConvolution(input_dim=self.input_dim,
                                             output_dim=FLAGS.hidden1,
