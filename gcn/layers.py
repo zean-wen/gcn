@@ -37,6 +37,11 @@ def dot(x, y, sparse=False):
     return res
 
 
+def row_normalization(features):
+    return tf.linalg.normalize(
+        features, ord='np.inf', axis=1, name=None
+    )
+
 class Layer(object):
     """Base layer class. Defines basic API for all layer objects.
     Implementation inspired by keras (http://keras.io).
@@ -224,4 +229,4 @@ class InputLayer(Layer):
             values=[object_embedding, ocr_embedding], axis=0, name='concat'
         )
 
-        return tf.sparse.from_dense(preprocess_features(outputs), name=None)
+        return tf.sparse.from_dense(row_normalization(outputs), name=None)
