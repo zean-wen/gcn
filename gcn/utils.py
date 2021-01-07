@@ -93,7 +93,7 @@ def load_data(dataset_str):
 
 
 def load_data_modified(data_dir, tier, image_index):
-    node_feature_h5 = h5py.File(os.path.join(data_dir, '{}_node_feature.h5'.format(tier)), 'r')
+    node_feature_h5 = h5py.File(os.path.join(data_dir, '{}_node_features.h5'.format(tier)), 'r')
     object_name_embedding = node_feature_h5['object_name_embedding'][image_index]
     object_visual_features = node_feature_h5['object_visual_features'][image_index]
     ocr_bounding_boxes = node_feature_h5['ocr_bounding_boxes'][image_index]
