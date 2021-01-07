@@ -201,8 +201,8 @@ class GraphConvolution(Layer):
 class FeatureProject(Layer):
     def __init__(self, input_dim, output_dim, **kwargs):
         super(FeatureProject, self).__init__(**kwargs)
-        # with tf.variable_scope(self.name + '_vars'):
-        self.vars['weights'] = uniform([input_dim, output_dim], name='weights')
+        with tf.variable_scope(self.name + '_vars'):
+            self.vars['weights'] = uniform([input_dim, output_dim], name='weights')
 
     def _call(self, inputs):
         output = tf.matmul(inputs, self.vars['weights'])
@@ -215,12 +215,17 @@ class InputLayer(Layer):
         self.object_visual_features = placeholders['object_visual_features']
         self.ocr_token_embeddings = placeholders['ocr_token_embeddings']
         self.ocr_bounding_boxes = placeholders['ocr_bounding_boxes']
-        self.object_visual_feature_project = FeatureProject(input_dim=2048, output_dim=300, **kwargs)
-        self.ocr_bbox_project = FeatureProject(input_dim=8, output_dim=300, **kwargs)
+        with tf.variable_scope(self.name + '_vars'):
+            self.vars['obj_v_proj'] = uniform([2048, 300], name='obj_v_proj')
+            self.vars['ocr_bbox_proj'] = uniform([8, 300], name='ocr_bbox_proj')
+        # self.object_visual_feature_project = FeatureProject(input_dim=2048, output_dim=300, **kwargs)
+        # self.ocr_bbox_project = FeatureProject(input_dim=8, output_dim=300, **kwargs)
 
     def _call(self, inputs):
-        self.object_visual_features = self.object_visual_feature_project(self.object_visual_features)
-        self.ocr_bounding_boxes = self.ocr_bbox_project(self.ocr_bounding_boxes)
+        # self.object_visual_features = self.object_visual_feature_project(self.object_visual_features)
+        # self.ocr_bounding_boxes = self.ocr_bbox_project(self.ocr_bounding_boxes)
+        self.object_visual_features = dot(self.object_visual_features, self.vars['obj_v_proj'])
+        self.ocr_bounding_boxes = dot(self.ocr_bounding_boxes, self.vars['ocr_bbox_proj'])
 
         self.object_embedding = tf.concat(
             values=[inputs, self.object_visual_features], axis=1, name='concat'
