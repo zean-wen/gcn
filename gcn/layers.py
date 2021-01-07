@@ -224,4 +224,4 @@ class InputLayer(Layer):
             values=[object_embedding, ocr_embedding], axis=0, name='concat'
         )
 
-        return preprocess_features(tf.sparse.from_dense(outputs, name=None))
+        return tf.sparse.from_dense(preprocess_features(outputs), name=None)

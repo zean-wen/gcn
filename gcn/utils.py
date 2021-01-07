@@ -147,8 +147,6 @@ def preprocess_features(features):
     return sparse_to_tuple(features)
 
 
-
-
 def normalize_adj(adj):
     """Symmetrically normalize adjacency matrix."""
     adj = sp.coo_matrix(adj)
