@@ -205,8 +205,7 @@ class FeatureProject(Layer):
             self.vars['weights'] = uniform([input_dim, output_dim], name='weights')
 
     def _call(self, inputs):
-        x = inputs
-        output = dot(x, self.vars['weights'])
+        output = tf.matmul(inputs, self.vars['weights'])
         return output
 
 
