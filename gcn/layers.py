@@ -227,7 +227,7 @@ class InputLayer(Layer):
             values=[inputs, self.object_visual_features], axis=1, name='concat'
         )
         self.ocr_embedding = tf.concat(
-            values=[self.ocr_token_embeddings, ocr_bounding_boxes], axis=1, name='concat'
+            values=[self.ocr_token_embeddings, self.ocr_bounding_boxes], axis=1, name='concat'
         )
         outputs = tf.concat(
             values=[self.object_embedding, self.ocr_embedding], axis=0, name='concat'
