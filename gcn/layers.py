@@ -228,5 +228,5 @@ class InputLayer(Layer):
         outputs = tf.concat(
             values=[object_embedding, ocr_embedding], axis=0, name='concat'
         )
-
+        print(outputs.shape)
         return row_normalization(outputs)
