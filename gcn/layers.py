@@ -226,8 +226,8 @@ class InputLayer(Layer):
         ocr_embedding = tf.concat(
             values=[self.ocr_token_embeddings, ocr_bounding_boxes], axis=1, name='concat'
         )
-        outputs = tf.concat(
+        x = tf.concat(
             values=[object_embedding, ocr_embedding], axis=0, name='concat'
         )
-
-        return row_normalization(outputs)
+        outputs = tf.linalg.normalize(x, ord=np.inf, axis=1, name=None)
+        return outputs
