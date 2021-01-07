@@ -123,9 +123,12 @@ for epoch in range(FLAGS.epochs):
     # if epoch > FLAGS.early_stopping and cost_val[-1] > np.mean(cost_val[-(FLAGS.early_stopping+1):-1]):
     #     print("Early stopping...")
     #     break
-hidden = sess.run(model.layer_hidden, feed_dict=feed_dict)
-print(hidden)
-print(hidden.shape)
+
+out = sess.run([model.activations[0], model.activations[1], model.layer_hidden], feed_dict=feed_dict)
+print(out[0])
+print(out[1])
+print(out[2])
+print(out[2].shape)
 print("Optimization Finished!")
 
 # Testing
