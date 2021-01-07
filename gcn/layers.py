@@ -1,5 +1,4 @@
 from gcn.inits import *
-from gcn.utils import preprocess_features
 import tensorflow as tf
 
 flags = tf.app.flags
@@ -234,4 +233,4 @@ class InputLayer(Layer):
             values=[object_embedding, ocr_embedding], axis=0, name='concat'
         )
 
-        return tf.sparse.from_dense(tensor_row_normalization(outputs))
+        return tensor_row_normalization(outputs)
