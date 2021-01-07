@@ -103,7 +103,7 @@ def load_data_modified(data_dir, tier, image_index):
     adj = adj_matrix_h5['adjacent_matrix'][image_index]
     adj = sp.csr_matrix(adj)
 
-    target_h5 = h5py.File(os.path.join(data_dir, '{}_adj_matrix.h5'.format(tier)), 'r')
+    target_h5 = h5py.File(os.path.join(data_dir, '{}_target.h5'.format(tier)), 'r')
     target = target_h5['target'][image_index]
 
     idx_train = range(len(target))
