@@ -39,7 +39,7 @@ def dot(x, y, sparse=False):
 
 def row_normalization(features):
     return tf.linalg.normalize(
-        features, ord='np.inf', axis=1, name=None
+        features, ord=np.inf, axis=1, name=None
     )
 
 class Layer(object):
