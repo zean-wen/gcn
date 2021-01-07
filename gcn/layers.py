@@ -201,8 +201,8 @@ class GraphConvolution(Layer):
 class FeatureProject(Layer):
     def __init__(self, input_dim, output_dim, **kwargs):
         super(FeatureProject, self).__init__(**kwargs)
-        with tf.variable_scope(self.name + '_vars'):
-            self.vars['weights'] = uniform([input_dim, output_dim], name='weights')
+        # with tf.variable_scope(self.name + '_vars'):
+        self.vars['weights'] = uniform([input_dim, output_dim], name='weights')
 
     def _call(self, inputs):
         output = tf.matmul(inputs, self.vars['weights'])
