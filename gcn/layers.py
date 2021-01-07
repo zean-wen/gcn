@@ -223,14 +223,14 @@ class InputLayer(Layer):
         object_visual_features = self.object_visual_feature_project(self.object_visual_features)
         ocr_bounding_boxes = self.ocr_bbox_project(self.ocr_bounding_boxes)
 
-        object_embedding = tf.concat(
+        self.object_embedding = tf.concat(
             values=[inputs, object_visual_features], axis=1, name='concat'
         )
-        ocr_embedding = tf.concat(
+        self.ocr_embedding = tf.concat(
             values=[self.ocr_token_embeddings, ocr_bounding_boxes], axis=1, name='concat'
         )
         outputs = tf.concat(
-            values=[object_embedding, ocr_embedding], axis=0, name='concat'
+            values=[self.object_embedding, self.ocr_embedding], axis=0, name='concat'
         )
 
         return tensor_row_normalization(outputs)

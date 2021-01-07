@@ -124,11 +124,9 @@ for epoch in range(FLAGS.epochs):
     #     print("Early stopping...")
     #     break
 
-out = sess.run([model.activations[0], model.activations[1], model.layer_hidden], feed_dict=feed_dict)
+out = sess.run([model.input_layer.object_embedding, model.activations[0]], feed_dict=feed_dict)
 print(out[0])
 print(out[1])
-print(out[2])
-print(out[2].shape)
 print("Optimization Finished!")
 
 # Testing
