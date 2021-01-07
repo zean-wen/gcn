@@ -163,7 +163,7 @@ class GCN(Model):
                                             placeholders=self.placeholders,
                                             act=tf.nn.relu,
                                             dropout=True,
-                                            sparse_inputs=True,
+                                            sparse_inputs=False,
                                             logging=self.logging))
 
         self.layers.append(GraphConvolution(input_dim=FLAGS.hidden1,
