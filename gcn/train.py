@@ -70,7 +70,7 @@ placeholders = {
     'object_name_embeddings': tf.placeholder(tf.float32, shape=(None, object_name_embeddings.shape[1])),
     'object_visual_features': tf.placeholder(tf.float32, shape=(None, object_visual_features.shape[1])),
     'ocr_token_embeddings': tf.placeholder(tf.float32, shape=(None, ocr_token_embeddings.shape[1])),
-    'ocr_bounding_boxes': tf.placeholder(tf.float32, shape=(None, ocr_token_embeddings.shape[1])),
+    'ocr_bounding_boxes': tf.placeholder(tf.float32, shape=(None, ocr_bounding_boxes.shape[1])),
     'labels': tf.placeholder(tf.float32, shape=(None, y_train.shape[1])),
     'labels_mask': tf.placeholder(tf.int32),
     'dropout': tf.placeholder_with_default(0., shape=()),

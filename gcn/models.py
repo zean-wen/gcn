@@ -181,10 +181,10 @@ class GCNModified(Model):
     def __init__(self, placeholders, input_dim, **kwargs):
         super(GCNModified, self).__init__(**kwargs)
 
-        self.inputs = [placeholders['object_name_embeddings'],
+        self.inputs = (placeholders['object_name_embeddings'],
                        placeholders['object_visual_features'],
                        placeholders['ocr_token_embeddings'],
-                       placeholders['ocr_bounding_boxes']]
+                       placeholders['ocr_bounding_boxes'])
 
         self.input_dim = input_dim
         # self.input_dim = self.inputs.get_shape().as_list()[1]  # To be supported in future Tensorflow versions
