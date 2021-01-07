@@ -35,6 +35,8 @@ flags.DEFINE_integer('image_index', 0, 'Image Index')
 
 adj, object_name_embeddings, object_visual_features, ocr_bounding_boxes, \
 ocr_token_embeddings, y_train, train_mask = load_data_modified(FLAGS.data_dir, FLAGS.tier, FLAGS.image_index)
+print(object_name_embeddings)
+print(object_visual_features)
 
 # Some preprocessing
 # features = preprocess_features(features)
@@ -126,6 +128,7 @@ for epoch in range(FLAGS.epochs):
 
 out = sess.run([model.input_layer.object_embedding, model.activations[0]], feed_dict=feed_dict)
 print(out[0])
+print(out[0].shape)
 print(out[1])
 print("Optimization Finished!")
 
