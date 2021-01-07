@@ -220,11 +220,11 @@ class InputLayer(Layer):
         self.ocr_bbox_project = FeatureProject(input_dim=8, output_dim=300, **kwargs)
 
     def _call(self, inputs):
-        object_visual_features = self.object_visual_feature_project(self.object_visual_features)
-        ocr_bounding_boxes = self.ocr_bbox_project(self.ocr_bounding_boxes)
+        self.object_visual_features = self.object_visual_feature_project(self.object_visual_features)
+        self.ocr_bounding_boxes = self.ocr_bbox_project(self.ocr_bounding_boxes)
 
         self.object_embedding = tf.concat(
-            values=[inputs, object_visual_features], axis=1, name='concat'
+            values=[inputs, self.object_visual_features], axis=1, name='concat'
         )
         self.ocr_embedding = tf.concat(
             values=[self.ocr_token_embeddings, ocr_bounding_boxes], axis=1, name='concat'
