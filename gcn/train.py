@@ -67,6 +67,7 @@ else:
 #     'num_features_nonzero': tf.placeholder(tf.int32)  # helper variable for sparse dropout
 # }
 
+
 placeholders = {
     'support': [tf.sparse_placeholder(tf.float32) for _ in range(num_supports)],
     'object_name_embeddings': tf.placeholder(tf.float32, shape=(None, object_name_embeddings.shape[1])),
@@ -85,7 +86,6 @@ model = model_func(placeholders, input_dim=600, logging=True)
 # Initialize session
 sess = tf.Session()
 
-
 # Define model evaluation function
 def evaluate(features, support, labels, mask, placeholders):
     t_test = time.time()
@@ -96,6 +96,11 @@ def evaluate(features, support, labels, mask, placeholders):
 
 # Init variables
 sess.run(tf.global_variables_initializer())
+
+feed_dict = construct_feed_dict(object_name_embeddings, object_visual_features, ocr_bounding_boxes,
+                                    ocr_token_embeddings, support, y_train, train_mask, placeholders)
+
+print(sess.run(model.input_layer.vars['obj_v_proj']), feed_dict=feed_dict)
 
 cost_val = []
 
