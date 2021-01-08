@@ -97,5 +97,5 @@ for image_index in tqdm(range(n_images)):
     save_dir = os.path.join(FLAGS.save_dir, '{}_sg_gcn'.format(FLAGS.tier))
     if not os.path.exists(save_dir):
         os.mkdir(save_dir)
-    with open(os.path.join(save_dir, '{}.p'.format(image_index))) as f:
+    with open(os.path.join(save_dir, '{}.p'.format(image_index)), 'wb') as f:
         pkl.dump(out, f)
