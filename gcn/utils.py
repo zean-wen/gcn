@@ -93,7 +93,7 @@ def load_data(dataset_str):
     return adj, features, y_train, y_val, y_test, train_mask, val_mask, test_mask
 
 
-def load_data_modified(data_dir, tier, image_index):
+def load_data_modified(data_dir, tier, image_index, use_dummy):
     node_feature_h5 = h5py.File(os.path.join(data_dir, '{}_node_features.h5'.format(tier)), 'r')
     object_name_embedding = node_feature_h5['object_name_embedding'][image_index]
     object_visual_features = node_feature_h5['object_visual_features'][image_index]
@@ -106,6 +106,14 @@ def load_data_modified(data_dir, tier, image_index):
 
     target_h5 = h5py.File(os.path.join(data_dir, '{}_target.h5'.format(tier)), 'r')
     target = target_h5['target'][image_index]
+
+    if use_dummy:
+        object_name_embedding = np.random.rand(object_name_embedding.shape)
+        object_visual_features = np.random.rand(object_visual_features.shape)
+        ocr_bounding_boxes = np.random.rand(ocr_bounding_boxes.shape)
+        ocr_token_embeddings = np.random.rand(ocr_token_embeddings.shape)
+        adj = np.random.rand(adj.shape)
+        adj = sp.csr_matrix(adj)
 
     idx_train = range(len(target))
 

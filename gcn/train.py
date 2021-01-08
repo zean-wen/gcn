@@ -28,6 +28,7 @@ flags.DEFINE_integer('max_degree', 3, 'Maximum Chebyshev polynomial degree.')
 flags.DEFINE_string('data_dir', None, 'Data root dir')
 flags.DEFINE_string('tier', 'train', 'train, val, or test')
 flags.DEFINE_integer('image_index', 0, 'Image Index')
+flags.DEFINE_bool('use_dummy', False, 'use dummy data for test')
 
 
 # Load data
@@ -85,6 +86,7 @@ model = model_func(placeholders, input_dim=600, logging=True)
 
 # Initialize session
 sess = tf.Session()
+
 
 # Define model evaluation function
 def evaluate(features, support, labels, mask, placeholders):
