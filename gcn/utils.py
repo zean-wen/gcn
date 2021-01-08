@@ -94,34 +94,60 @@ def load_data(dataset_str):
 
 
 def load_data_modified(data_dir, tier, image_index, use_dummy):
-    node_feature_h5 = h5py.File(os.path.join(data_dir, '{}_node_features.h5'.format(tier)), 'r')
-    object_name_embedding = node_feature_h5['object_name_embedding'][image_index]
-    object_visual_features = node_feature_h5['object_visual_features'][image_index]
-    ocr_bounding_boxes = node_feature_h5['ocr_bounding_boxes'][image_index]
-    ocr_token_embeddings = node_feature_h5['ocr_token_embeddings'][image_index]
+    tier_data_dir = os.path.join(data_dir, 'textvqa_{}'.format(tier))
 
-    adj_matrix_h5 = h5py.File(os.path.join(data_dir, '{}_adj_matrix.h5'.format(tier)), 'r')
-    adj = adj_matrix_h5['adjacent_matrix'][image_index]
+    # node feature loading
+    node_feature_dir = os.path.join(tier_data_dir, 'node_features')
+
+    object_name_embedding_dir = os.path.join(node_feature_dir, 'object_name_embeddings')
+    image_object_name_embedding_dir = os.path.join(object_name_embedding_dir, '{}.p'.format(image_index))
+    with open(image_object_name_embedding_dir, 'rb') as f:
+        object_name_embeddings = pkl.load(f)
+
+    object_visual_feature_dir = os.path.join(node_feature_dir, 'object_visual_features')
+    image_object_visual_feature_dir = os.path.join(object_visual_feature_dir, '{}.p'.format(image_index))
+    with open(image_object_visual_feature_dir, 'rb') as f:
+        object_visual_features = pkl.load(f)
+
+    ocr_token_embedding_dir = os.path.join(node_feature_dir, 'ocr_token_embeddings')
+    image_ocr_token_embedding_dir = os.path.join(ocr_token_embedding_dir, '{}.p'.format(image_index))
+    with open(image_ocr_token_embedding_dir, 'rb') as f:
+        ocr_token_embeddings = pkl.load(f)
+
+    ocr_bounding_boxe_dir = os.path.join(node_feature_dir, 'ocr_bounding_boxes')
+    image_ocr_bounding_boxe_dir = os.path.join(ocr_bounding_boxe_dir, '{}.p'.format(image_index))
+    with open(image_ocr_bounding_boxe_dir, 'rb') as f:
+        ocr_bounding_boxes = pkl.load(f)
+
+    # adj matrix loading
+    adj_matrix_dir = os.path.join(tier_data_dir, 'adjacent_matrix')
+    image_adj_matrix_dir = os.path.join(adj_matrix_dir, '{}.p'.format(image_index))
+    with open(image_adj_matrix_dir, 'rb') as f:
+        adj = pkl.load(f)
     adj = sp.csr_matrix(adj)
 
-    target_h5 = h5py.File(os.path.join(data_dir, '{}_target.h5'.format(tier)), 'r')
-    target = target_h5['target'][image_index]
+    # target data loading
+    target_dir = os.path.join(tier_data_dir, 'targets')
+    image_target_dir = os.path.join(target_dir, '{}.p'.format(image_index))
+    with open(image_target_dir, 'rb') as f:
+        targets = pkl.load(f)
 
+    # use dummy data
     if use_dummy:
-        object_name_embedding = np.random.rand(*object_name_embedding.shape)
+        object_name_embedding = np.random.rand(*object_name_embeddings.shape)
         object_visual_features = np.random.rand(*object_visual_features.shape)
         ocr_bounding_boxes = np.random.rand(*ocr_bounding_boxes.shape)
         ocr_token_embeddings = np.random.rand(*ocr_token_embeddings.shape)
         adj = np.random.rand(*adj.shape)
         adj = sp.csr_matrix(adj)
 
-    idx_train = range(len(target))
+    idx_train = range(len(targets))
 
-    train_mask = sample_mask(idx_train, target.shape[0])
+    train_mask = sample_mask(idx_train, targets.shape[0])
 
-    y_train = target
+    y_train = targets
 
-    return adj, object_name_embedding, object_visual_features, ocr_bounding_boxes, ocr_token_embeddings, \
+    return adj, object_name_embeddings, object_visual_features, ocr_bounding_boxes, ocr_token_embeddings, \
            y_train, train_mask
 
 
