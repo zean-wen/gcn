@@ -171,6 +171,7 @@ class GraphConvolution(Layer):
             self._log_vars()
 
     def _call(self, inputs):
+
         x = inputs
 
         # dropout
