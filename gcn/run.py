@@ -38,7 +38,7 @@ ids_map_dir = os.path.join(FLAGS.ids_map_dir, '{}_ids_map.json'.format(FLAGS.tie
 with open(ids_map_dir, 'r') as f:
     n_images = len(json.load(f)['image_ix_to_id'])
 
-for image_index in tqdm(range(n_images)):
+for image_index in tqdm(range(FLAGS.start_index, n_images)):
     adj, object_name_embeddings, object_visual_features, ocr_bounding_boxes, ocr_token_embeddings, y_train, train_mask = \
         load_data_modified(FLAGS.data_dir, FLAGS.tier, image_index, FLAGS.use_dummy)
 
@@ -71,7 +71,7 @@ for image_index in tqdm(range(n_images)):
                                     ocr_token_embeddings, support, y_train, train_mask, placeholders)
 
     # Train model
-    for epoch in range(FLAGS.start_index, FLAGS.epochs):
+    for epoch in range(FLAGS.epochs):
         t = time.time()
         # Construct feed dictionary
         feed_dict = construct_feed_dict(object_name_embeddings, object_visual_features, ocr_bounding_boxes,
