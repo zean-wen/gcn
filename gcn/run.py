@@ -32,6 +32,7 @@ flags.DEFINE_string('ids_map_dir', None, 'ids_map dir')
 flags.DEFINE_string('tier', 'train', 'train, val, or test')
 flags.DEFINE_bool('use_dummy', False, 'use dummy data for test')
 flags.DEFINE_string('save_dir', None, 'save dir')
+flags.DEFINE_integer('start_index', 0, 'image start index')
 
 ids_map_dir = os.path.join(FLAGS.ids_map_dir, '{}_ids_map.json'.format(FLAGS.tier))
 with open(ids_map_dir, 'r') as f:
@@ -70,7 +71,7 @@ for image_index in tqdm(range(n_images)):
                                     ocr_token_embeddings, support, y_train, train_mask, placeholders)
 
     # Train model
-    for epoch in range(FLAGS.epochs):
+    for epoch in range(FLAGS.start_index, FLAGS.epochs):
         t = time.time()
         # Construct feed dictionary
         feed_dict = construct_feed_dict(object_name_embeddings, object_visual_features, ocr_bounding_boxes,
