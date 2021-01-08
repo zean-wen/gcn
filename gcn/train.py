@@ -98,10 +98,7 @@ def evaluate(features, support, labels, mask, placeholders):
 sess.run(tf.global_variables_initializer())
 
 feed_dict = construct_feed_dict(object_name_embeddings, object_visual_features, ocr_bounding_boxes,
-                                    ocr_token_embeddings, support, y_train, train_mask, placeholders)
-
-print('#####')
-print(sess.run(model.input_layer.vars['obj_v_proj'], feed_dict=feed_dict))
+                                ocr_token_embeddings, support, y_train, train_mask, placeholders)
 
 cost_val = []
 
