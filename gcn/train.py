@@ -34,10 +34,8 @@ flags.DEFINE_bool('use_dummy', False, 'use dummy data for test')
 # Load data
 # adj, features, y_train, y_val, y_test, train_mask, val_mask, test_mask = load_data(FLAGS.dataset)
 
-adj, object_name_embeddings, object_visual_features, ocr_bounding_boxes, \
-ocr_token_embeddings, y_train, train_mask = load_data_modified(FLAGS.data_dir, FLAGS.tier, FLAGS.image_index, FLAGS.use_dummy)
-print(object_name_embeddings)
-print(object_visual_features)
+adj, object_name_embeddings, object_visual_features, ocr_bounding_boxes, ocr_token_embeddings, y_train, train_mask = \
+    load_data_modified(FLAGS.data_dir, FLAGS.tier, FLAGS.image_index, FLAGS.use_dummy)
 
 # Some preprocessing
 # features = preprocess_features(features)
@@ -131,12 +129,16 @@ for epoch in range(FLAGS.epochs):
     #     print("Early stopping...")
     #     break
 
-out = sess.run([model.input_layer.object_visual_features, model.layers[0].vars['weights_0']], feed_dict=feed_dict)
+print("Optimization Finished!")
+
+feed_dict = construct_feed_dict(object_name_embeddings, object_visual_features, ocr_bounding_boxes,
+                                ocr_token_embeddings, support, y_train, train_mask, placeholders)
+
+out = sess.run(model.layers[1].hidden_state, feed_dict=feed_dict)
 print(out[0])
 print(out[0].shape)
-print(out[1])
-print(tf.all_variables())
-print("Optimization Finished!")
+
+
 
 # Testing
 # test_cost, test_acc, test_duration = evaluate(features, support, y_test, test_mask, placeholders)
