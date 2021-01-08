@@ -244,6 +244,7 @@ class GraphConvolutionModified(Layer):
 
             if not self.featureless:
                 support = dot(self.support[i], x, sparse=True)
+                self.hidden_x = x
                 self.hidden_state = support
                 support = dot(support, self.vars['weights_' + str(i)],
                               sparse=self.sparse_inputs)
