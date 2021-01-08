@@ -108,11 +108,11 @@ def load_data_modified(data_dir, tier, image_index, use_dummy):
     target = target_h5['target'][image_index]
 
     if use_dummy:
-        object_name_embedding = np.random.rand(object_name_embedding.shape)
-        object_visual_features = np.random.rand(object_visual_features.shape)
-        ocr_bounding_boxes = np.random.rand(ocr_bounding_boxes.shape)
-        ocr_token_embeddings = np.random.rand(ocr_token_embeddings.shape)
-        adj = np.random.rand(adj.shape)
+        object_name_embedding = np.random.rand(*object_name_embedding.shape)
+        object_visual_features = np.random.rand(*object_visual_features.shape)
+        ocr_bounding_boxes = np.random.rand(*ocr_bounding_boxes.shape)
+        ocr_token_embeddings = np.random.rand(*ocr_token_embeddings.shape)
+        adj = np.random.rand(*adj.shape)
         adj = sp.csr_matrix(adj)
 
     idx_train = range(len(target))
