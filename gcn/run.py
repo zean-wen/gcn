@@ -35,7 +35,7 @@ flags.DEFINE_string('save_dir', None, 'save dir')
 
 ids_map_dir = os.path.join(FLAGS.ids_map_dir, '{}_ids_map.json'.format(FLAGS.tier))
 with open(ids_map_dir, 'r') as f:
-    n_images = json.load(f)['image_ix_to_id']
+    n_images = len(json.load(f)['image_ix_to_id'])
 
 for image_index in tqdm(range(n_images)):
     adj, object_name_embeddings, object_visual_features, ocr_bounding_boxes, ocr_token_embeddings, y_train, train_mask = \
