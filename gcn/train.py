@@ -35,7 +35,7 @@ flags.DEFINE_bool('use_dummy', False, 'use dummy data for test')
 # adj, features, y_train, y_val, y_test, train_mask, val_mask, test_mask = load_data(FLAGS.dataset)
 
 adj, object_name_embeddings, object_visual_features, ocr_bounding_boxes, \
-ocr_token_embeddings, y_train, train_mask = load_data_modified(FLAGS.data_dir, FLAGS.tier, FLAGS.image_index)
+ocr_token_embeddings, y_train, train_mask = load_data_modified(FLAGS.data_dir, FLAGS.tier, FLAGS.image_index, FLAGS.use_dummy)
 print(object_name_embeddings)
 print(object_visual_features)
 
