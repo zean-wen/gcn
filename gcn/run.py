@@ -27,10 +27,10 @@ flags.DEFINE_integer('early_stopping', 10, 'Tolerance for early stopping (# of e
 flags.DEFINE_integer('max_degree', 3, 'Maximum Chebyshev polynomial degree.')
 
 flags.DEFINE_string('data_dir', None, 'Data root dir')
-flags.DEFINE_string('ids_map_dir', None, 'Data root dir')
+flags.DEFINE_string('ids_map_dir', None, 'ids_map dir')
 flags.DEFINE_string('tier', 'train', 'train, val, or test')
 flags.DEFINE_bool('use_dummy', False, 'use dummy data for test')
-flags.DEFINE_string('save_dir', None, 'Data root dir')
+flags.DEFINE_string('save_dir', None, 'save dir')
 
 ids_map_dir = os.path.join(FLAGS.ids_map_dir, '{}_ids_map.json'.format(FLAGS.tier))
 with open(ids_map_dir, 'r') as f:
