@@ -216,16 +216,12 @@ class InputLayer(Layer):
         self.ocr_token_embeddings = placeholders['ocr_token_embeddings']
         self.ocr_bounding_boxes = placeholders['ocr_bounding_boxes']
         with tf.variable_scope(self.name + '_vars'):
-            # self.vars['obj_v_proj'] = tf.Variable(tf.random_uniform((2048, 300), minval=-0.05, maxval=0.05, dtype=tf.float32))
-            # self.vars['ocr_bbox_proj'] = tf.Variable(tf.random_uniform((8, 300), minval=-0.05, maxval=0.05, dtype=tf.float32))
             self.object_visual_feature_project = FeatureProject(input_dim=2048, output_dim=300, **kwargs)
             self.ocr_bbox_project = FeatureProject(input_dim=8, output_dim=300, **kwargs)
 
     def _call(self, inputs):
         self.object_visual_features = self.object_visual_feature_project(self.object_visual_features)
         self.ocr_bounding_boxes = self.ocr_bbox_project(self.ocr_bounding_boxes)
-        # self.object_visual_features = dot(self.object_visual_features, self.vars['obj_v_proj'])
-        # self.ocr_bounding_boxes = dot(self.ocr_bounding_boxes, self.vars['ocr_bbox_proj'])
 
         self.object_embedding = tf.concat(
             values=[inputs, self.object_visual_features], axis=1, name='concat'

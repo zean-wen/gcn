@@ -131,12 +131,10 @@ for epoch in range(FLAGS.epochs):
     #     print("Early stopping...")
     #     break
 
-out = sess.run([model.input_layer.vars['obj_v_proj'], model.input_layer.object_visual_features, model.layers[0].vars['weights_0']], feed_dict=feed_dict)
+out = sess.run([model.input_layer.object_visual_features, model.layers[0].vars['weights_0']], feed_dict=feed_dict)
 print(out[0])
 print(out[0].shape)
 print(out[1])
-print(out[2])
-print(out[2].shape)
 print(tf.all_variables())
 print("Optimization Finished!")
 
