@@ -134,12 +134,10 @@ print("Optimization Finished!")
 feed_dict = construct_feed_dict(object_name_embeddings, object_visual_features, ocr_bounding_boxes,
                                 ocr_token_embeddings, support, y_train, train_mask, placeholders)
 
-out = sess.run([model.layers[1].hidden_state, model.layers[1].hidden_x], feed_dict=feed_dict)
-print(out[0])
-print(out[0].shape)
+out = sess.run(model.layers[1].hidden_state, feed_dict=feed_dict)
+print(out)
+print(out.shape)
 
-print(out[1])
-print(out[1].shape)
 
 # Testing
 # test_cost, test_acc, test_duration = evaluate(features, support, y_test, test_mask, placeholders)
