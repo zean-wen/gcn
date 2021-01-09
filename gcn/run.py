@@ -38,7 +38,9 @@ ids_map_dir = os.path.join(FLAGS.ids_map_dir, '{}_ids_map.json'.format(FLAGS.tie
 with open(ids_map_dir, 'r') as f:
     n_images = len(json.load(f)['image_ix_to_id'])
 
-for image_index in tqdm(range(FLAGS.start_index, n_images)):
+for image_index in tqdm(range(FLAGS.start_index, n_images),
+                        unit='image',
+                        desc='Generating gcn sg for {}'.format(FLAGS.tier)):
     adj, object_name_embeddings, object_visual_features, ocr_bounding_boxes, ocr_token_embeddings, y_train, train_mask = \
         load_data_modified(FLAGS.data_dir, FLAGS.tier, image_index, FLAGS.use_dummy)
 
@@ -72,7 +74,6 @@ for image_index in tqdm(range(FLAGS.start_index, n_images)):
 
     # Train model
     for epoch in range(FLAGS.epochs):
-        t = time.time()
         # Construct feed dictionary
         feed_dict = construct_feed_dict(object_name_embeddings, object_visual_features, ocr_bounding_boxes,
                                         ocr_token_embeddings, support, y_train, train_mask, placeholders)
@@ -80,13 +81,6 @@ for image_index in tqdm(range(FLAGS.start_index, n_images)):
 
         # Training step
         outs = sess.run([model.opt_op, model.loss, model.accuracy], feed_dict=feed_dict)
-
-        print("Epoch:", '%04d' % (epoch + 1), "train_loss=", "{:.5f}".format(outs[1]),
-              "train_acc=", "{:.5f}".format(outs[2]), "time=", "{:.5f}".format(time.time() - t))
-
-        # if epoch > FLAGS.early_stopping and cost_val[-1] > np.mean(cost_val[-(FLAGS.early_stopping+1):-1]):
-        #     print("Early stopping...")
-        #     break
 
     print("Optimization Finished!")
 
