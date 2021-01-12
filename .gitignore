@@ -97,3 +97,5 @@ ENV/
 .ropeproject
 
 *.pickle
+
+scene_graph_generation
