@@ -98,6 +98,7 @@ ENV/
 
 *.pickle
 
-scene_graph_generation
+scene_graph_generation/data
 
 gcn/data/text*
+/gcn/data/Untitled.ipynb
