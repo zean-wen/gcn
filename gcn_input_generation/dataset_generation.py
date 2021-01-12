@@ -7,12 +7,14 @@ from .utils import delete_zero_padding
 from .node_feature import NodeFeature
 from .adj_matrix import AdjMatrix
 from .target import Target
+from .mask import Mask
 
 
 class DataSet:
     def __init__(self,
                  tier,
                  save_dir,
+                 save_h5,
                  data_root,
                  word_emb_config):
         self.tier = tier
@@ -65,10 +67,13 @@ class DataSet:
         with open(ocr_dir, 'r') as f:
             ocr = json.load(f)
         # n_ocr = len(ocr)
+        max_n_ocr = 0
         image_n_ocr = {}
         for image_index in range(n_images):
             image_id = image_ix_to_id[str(image_index)]
             image_n_ocr[image_index] = len(ocr[image_id])
+            if max_n_ocr < len(ocr[image_id]):
+                max_n_ocr = len(ocr[image_id])
 
         # read adjacent matrix
         adj_matrix_dir = os.path.join(data_root,
@@ -90,27 +95,44 @@ class DataSet:
             assert (image_n_objects[image_index] + image_n_ocr[image_index]) == image_n_nodes[image_index]
 
         self.node_feature = NodeFeature(save_dir,
+                                        save_h5,
                                         image_ix_to_id,
                                         n_images,
                                         nodes,
                                         image_n_objects,
                                         ocr,
+                                        max_n_ocr,
                                         visual_feature_dir,
                                         word_emb_config)
         self.adjacent_matrix = AdjMatrix(save_dir,
+                                         save_h5,
                                          image_ix_to_id,
-                                         adj_matrix)
+                                         n_images,
+                                         adj_matrix,
+                                         max_n_ocr,
+                                         image_n_objects,
+                                         image_n_ocr)
         self.target = Target(save_dir,
+                             save_h5,
                              n_images,
                              image_n_objects,
                              image_n_ocr,
+                             max_n_ocr,
                              ocr)
+
+        self.mask = Mask(save_dir,
+                         save_h5,
+                         n_images,
+                         max_n_ocr,
+                         image_n_objects,
+                         image_n_ocr)
 
     def generate(self):
         print('#### Generating graph data for {} images ####'.format(self.tier))
         self.node_feature.generate()
         self.adjacent_matrix.generate()
         self.target.generate()
+        self.mask.generate()
 
 
 def main():
@@ -121,6 +143,7 @@ def main():
     for tier in tiers:
         data_set = DataSet(tier,
                            config.save_dir,
+                           config.save_h5,
                            config.data_root,
                            config.word_emb_config)
         data_set.generate()
