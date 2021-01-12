@@ -27,10 +27,10 @@ flags.DEFINE_bool('use_dummy', False, 'use dummy data for test')
 
 tiers = FLAGS.tiers.split('_')
 for tier in tiers:
-	target_dir = os.path.join(FLAGS.data_dir, 'textvqa_{}'.format(tier), 'targets')
-	n_images = len(os.listdir(target_dir)) 
+    target_dir = os.path.join(FLAGS.data_dir, 'textvqa_{}'.format(tier), 'targets')
+    n_images = len(os.listdir(target_dir))
 
-	for image_index in tqdm(range(FLAGS.start_index, n_images),
-	                        unit='image',
-	                        desc='Generating gcn sg for {}'.format(tier)):
-		train_model(tier, image_index)
+    for image_index in tqdm(range(FLAGS.start_index, n_images),
+                            unit='image',
+                            desc='Generating gcn sg for {}'.format(tier)):
+        train_model(tier, image_index)
