@@ -99,3 +99,5 @@ ENV/
 *.pickle
 
 scene_graph_generation
+
+gcn/data/text*
