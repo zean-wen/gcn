@@ -5,7 +5,7 @@ import time
 import tensorflow as tf
 
 from gcn.utils import *
-from gcn.models import GCNModified
+from gcn.models import *
 
 
 def train_model(tier, image_index):
