@@ -26,7 +26,11 @@ flags.DEFINE_float('dropout', 0.2, 'Dropout rate (1 - keep probability).')
 flags.DEFINE_float('weight_decay', 5e-4, 'Weight for L2 loss on embedding matrix.')
 flags.DEFINE_bool('use_dummy', False, 'use dummy data for test')
 
+if not os.path.exists(FLAGS.save_dir):
+    os.mkdir(FLAGS.save_dir)
+
 tiers = FLAGS.tiers.split('_')
+
 for tier in tiers:
     target_dir = os.path.join(FLAGS.data_dir, 'textvqa_{}'.format(tier), 'targets')
     n_images = len(os.listdir(target_dir))
