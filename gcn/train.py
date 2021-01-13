@@ -1,16 +1,15 @@
 from __future__ import division
 from __future__ import print_function
 
-import time
 import tensorflow as tf
 
 from gcn.utils import *
 from gcn.models import *
 
 
-def train_model(tier, image_index):
+def train_model(data):
     adj, object_name_embeddings, object_visual_features, ocr_bounding_boxes, ocr_token_embeddings, y_train, \
-        train_mask = load_data_modified(FLAGS.data_dir, tier, image_index, FLAGS.use_dummy)
+    train_mask = data
 
     support = [preprocess_adj(adj)]
     num_supports = 1
@@ -52,9 +51,4 @@ def train_model(tier, image_index):
 
     out = sess.run(model.layers[1].hidden_state, feed_dict=feed_dict)
 
-    # save 2nd layer hidden state
-    save_dir = os.path.join(FLAGS.save_dir, '{}_sg'.format(tier))
-    if not os.path.exists(save_dir):
-        os.mkdir(save_dir)
-    with open(os.path.join(save_dir, '{}.p'.format(image_index)), 'wb') as f:
-        pkl.dump(out, f)
+    return out

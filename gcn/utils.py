@@ -93,9 +93,7 @@ def load_data(dataset_str):
     return adj, features, y_train, y_val, y_test, train_mask, val_mask, test_mask
 
 
-def load_data_modified(data_dir, tier, image_index, use_dummy):
-    tier_data_dir = os.path.join(data_dir, 'textvqa_{}'.format(tier))
-
+def load_data_pkl(tier_data_dir, image_index, use_dummy):
     # node feature loading
     node_feature_dir = os.path.join(tier_data_dir, 'node_features')
 
@@ -134,7 +132,7 @@ def load_data_modified(data_dir, tier, image_index, use_dummy):
 
     # use dummy data
     if use_dummy:
-        object_name_embedding = np.random.rand(*object_name_embeddings.shape)
+        object_name_embeddings = np.random.rand(*object_name_embeddings.shape)
         object_visual_features = np.random.rand(*object_visual_features.shape)
         ocr_bounding_boxes = np.random.rand(*ocr_bounding_boxes.shape)
         ocr_token_embeddings = np.random.rand(*ocr_token_embeddings.shape)
@@ -147,8 +145,28 @@ def load_data_modified(data_dir, tier, image_index, use_dummy):
 
     y_train = targets
 
-    return adj, object_name_embeddings, object_visual_features, ocr_bounding_boxes, ocr_token_embeddings, \
-           y_train, train_mask
+    return (adj, object_name_embeddings, object_visual_features, ocr_bounding_boxes, ocr_token_embeddings, y_train,
+            train_mask)
+
+
+def load_data_h5(image_index, node_feature_h5, adj_matrix_h5, target_h5, mask_h5):
+    object_name_embeddings = node_feature_h5['object_name_embeddings'][image_index]
+    object_visual_features = node_feature_h5['object_visual_features'][image_index]
+    ocr_bounding_boxes = node_feature_h5['ocr_bounding_boxes'][image_index]
+    ocr_token_embeddings = node_feature_h5['ocr_token_embeddings'][image_index]
+
+    adj = adj_matrix_h5['adjacent_matrix'][image_index]
+    adj = sp.csr_matrix(adj)
+
+    labels = target_h5['targets'][image_index]
+
+    train_mask = np.array(mask_h5['masks'][image_index], dtype=np.bool)
+
+    y_train = np.zeros(labels.shape)
+    y_train[train_mask, :] = labels[train_mask, :]
+
+    return (adj, object_name_embeddings, object_visual_features, ocr_bounding_boxes, ocr_token_embeddings, y_train,
+            train_mask)
 
 
 def sparse_to_tuple(sparse_mx):
